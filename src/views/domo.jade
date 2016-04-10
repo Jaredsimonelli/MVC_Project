@@ -1,0 +1,34 @@
+extends ./base.jade
+block append style
+	link(rel="stylesheet", type="text/css", href="/assets/style.css")
+block body
+	nav
+		.navlink
+			a(href="/login") Back
+		.navlink
+			a(href="/logout") Log out
+	section#Top
+		h1.domoTitleA These are your Characters
+		h1.domoTitleB Hover over a character for more detailed info
+	section#domos
+		if !domos || domos.length == 0
+			div.domo
+				h3.emptyDomo No Domos yet
+		else
+			each val in domos
+				div.newDomo
+					h3.domoName Name: #{val.name}
+					h3.domoColor Color: #{val.color}
+					h3.domoLevel Level: #{val.level}
+					p.info
+						| Your name is #{val.name}, you were born in space...
+						| your are #{val.color}, you have lived your life in peace..Until the great space wars errupted, 
+						| you managed to increase your power level to #{val.level} and with your new power you ended the war! 
+						| THE END
+	#domoMessage
+		img#speech(src="/assets/img/speech.png", alt="speech box")
+		h3
+			span#errorMessage
+		img#domo(src="assets/img/domo.png", alt="domo")
+block scripts
+	script(src="/assets/maker.js")

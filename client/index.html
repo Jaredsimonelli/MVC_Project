@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<style>
+		canvas {
+			background-color: white;
+			padding: 0;
+			margin: auto;
+			display: block;
+			width: 800px;
+		}
+		
+		body{
+			background-color: black;
+		}
+		
+		h1{
+			color: white;
+		}
+		
+	</style>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        "use strict";
+    
+        var canvas;
+        var ctx;
+		/*var width = window.innerWidth;
+		var height = window.innerHeight;*/
+		var speed;
+		var up,down,left,right;
+		var gameScreen = false;
+		
+		//User data
+		var user = 'user' + (Math.floor((Math.random()*1000)) + 1);
+		var draws = {};
+		var collectables = {};
+
+        //our websocket connection
+        var socket; 
+        
+        //redraw our square to the screen
+        function redraw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+			
+			//For text style
+			var keys = Object.keys(draws);
+			var cKeys = Object.keys(collectables);
+			
+			//Draw Collectables
+			for(var i = 0; i < cKeys.length; i++)
+			{
+				//Draw Collectables
+				var dColl = collectables[ cKeys[i] ];
+				
+				//console.log(collectables);
+				
+				//Collectable color
+				ctx.strokeStyle = 'green';
+				
+				//Draw 
+				ctx.beginPath();
+				ctx.arc(dColl.x, dColl.y, 10, 0, 2*Math.PI);
+				ctx.stroke();
+			}	
+			
+			//Draw Players
+			for(var i = 0; i < keys.length; i++)
+			{
+				var drawCall = draws[ keys[i] ];
+				
+				//Text color
+				ctx.font = "10px Verdana";
+				ctx.fillStyle = drawCall.color;
+				ctx.lineWidth = 3;
+				ctx.fillText(drawCall.name + ": " + drawCall.type, drawCall.x - 15, drawCall.y - 10);
+				//Player
+				ctx.fillRect(drawCall.x, drawCall.y, drawCall.width, drawCall.height);
+				
+				//Print Score
+				ctx.font = "15px Verdana";
+				ctx.fillText(drawCall.name + ": " + drawCall.points, 5, 25 + (i * 25)); 
+				//console.log(drawCall.name + ':  ' + drawCall.points);
+			}			
+			
+        }
+		
+		//Draws main screen
+		function drawMainMenu(){
+			//Clear canvas
+			ctx.clearRect(0, 0, canvas.width, canvas.height);
+			
+			//Put title on screen
+			//Create gradient
+			var gradient=ctx.createLinearGradient(110,0,100,100);
+			gradient.addColorStop("0","magenta");
+			gradient.addColorStop("0.5","blue");
+			gradient.addColorStop("1.0","red");
+			
+			//Fill text with gradint
+			ctx.fillStyle = gradient;
+			ctx.font = "50px Lucida Console";
+			ctx.fillText("Geo Wars", 125 , 50);
+			
+			ctx.fillStyle = 'red';
+			ctx.font = "25px Lucida Console";
+			ctx.fillText("PRESS ENTER TO CONTINUE", 75 , 80);
+			
+			var playerBoxY = 100;
+			
+			ctx.strokeStyle = "black";
+			ctx.lineWidth = 3;
+			ctx.strokeRect(50, playerBoxY, 400, 50);
+			ctx.strokeRect(50, playerBoxY + 75, 400, 50);
+			ctx.strokeRect(50, playerBoxY + 150, 400, 50);
+			ctx.strokeRect(50, playerBoxY + 225, 400, 50);
+			ctx.strokeRect(50, playerBoxY + 300, 400, 50);
+			
+			
+		}
+        
+
+        function init() {
+            canvas = document.querySelector("#canvas");
+            ctx = canvas.getContext("2d");
+			
+			
+			//Movement variables
+			speed = 2.5;
+			up = false;
+			down = false;
+			right = false;
+			left = false;
+			
+			//Give an init position
+			var x = 200;
+			var y = 200;
+			
+			//SetCall function
+			function moveCalls(){
+				//Click coords
+				if(up){y = y - speed;}
+				if(down){y = y + speed;}
+				if(left){x = x - speed;}
+				else if(right){x = x + speed;}
+				
+				//Update draws array
+				var time = new Date().getTime();
+				draws[user].lastUpdate = time;
+				draws[user].x = x;
+				draws[user].y = y;
+				
+				//Emit
+				socket.emit('mover', { name: user, playInfo: draws[user]});
+				socket.emit('checkCollisions', draws[user]);
+			}
+			
+			function setUp(){
+				var time = new Date().getTime();
+				draws[user] = {lastUpdate: time, x: x, y: y, width: 50, height: 50, color: "black", name: user, type: "warrior", points: 0};
+			}
+			
+			//HandleMessage function
+			function handleMessage(data)
+			{	
+				//If draws at index data.name is null add data, else update data
+				if( !draws[data.playInfo.name] )
+				{
+					draws[data.playInfo.name] = {lastUpdate: data.playInfo.lastUpdate, x: data.playInfo.x, y: data.playInfo.y, width: 50, height: 50, color: "red", name: data.playInfo.name, type: data.playInfo.type, points: 0};
+				}
+				else
+				{
+					draws[data.playInfo.name].x = data.playInfo.x;
+					draws[data.playInfo.name].y = data.playInfo.y;
+					draws[data.playInfo.name].points = data.playInfo.points;
+				}
+
+				redraw();
+			}
+			
+			//Handles the collectable data
+			function handleCollectables(data){
+				collectables = data.collInfo;			
+			}
+			
+			function handleCollision(data){
+				collectables = data.collInfo;	
+				draws[data.playInfo.name].points = data.playInfo.points;
+			}
+			
+			//Checks for key down input
+			document.addEventListener('keydown', function(event) {			
+				//if "W" or Up Arrow was pressed
+				if(event.keyCode == 87 || event.keyCode == 38) {up = true;}
+				//if "A" or Left Arrow was pressed
+				if(event.keyCode == 65 || event.keyCode == 37) {left = true;}
+				//if "S" or Down Arrow was pressed
+				if(event.keyCode == 83 || event.keyCode == 40) {down = true;}
+				//if "D" or Right Arrow was pressed
+				if(event.keyCode == 68 || event.keyCode == 39) {right = true;}
+				//if "enter" is pressed
+				if(event.keyCode == 13) {gameScreen = true;}
+				
+				moveCalls();
+				
+			});
+			
+			//Checks for key up input
+			document.addEventListener('keyup', function(event) {
+				//if "W" or Up Arrow is up
+				if(event.keyCode == 87 || event.keyCode == 38) {up = false;}
+				//if "A" or Left Arrow is up
+				if(event.keyCode == 65 || event.keyCode == 37) {left = false;}
+				//if "S" or Down Arrow is up
+				if(event.keyCode == 83 || event.keyCode == 40) {down = false;}
+				//if "D" or Right Arrow is up
+				if(event.keyCode == 68 || event.keyCode == 39) {right = false;}
+				
+				moveCalls();
+			});
+			
+			//Checks for closed window
+			document.addEventListener('onunload', function(event) {
+				socket.emit('disconnect');
+			});
+
+        
+            //Connect to our server (io added automatically by socket.io when embedding it in the HTTP app on the server side)
+            //This will return a new websocket connection. Every call to io.connect will return a new websocket connection 
+            //BUT not necessarily close the existing one. 
+            //You can absolutely use multiple websockets on the client, but you have to manage which ones are listening to which
+            //messages. In cases like this, you only need one. 
+            socket = io.connect();
+			
+			
+			
+            //When the socket connects successfully
+            socket.on('connect', function () {
+				//Setup the first time user connects, also draw
+				setUp();
+				
+				if(gameScreen ==  false)
+				{
+					drawMainMenu();
+					socket.emit('setUp');
+				}
+				else
+				{	
+					redraw();
+				}
+				
+				//Emit (Commented out for main menu test
+				//socket.emit('mover', { name: user, info: draws[user] });
+            });      
+            
+            //When our socket receives 'moveCharacter' messages from the server, call our handleMessage function
+			socket.on('moveCharacter',handleMessage);
+			socket.on('setUpCollectables', handleCollectables);
+			socket.on('collisionDetect', handleCollision);
+			
+			
+			//Get mouse position
+			/*canvas.addEventListener('click', function(evt) {
+				var mousePos = getMousePos(canvas, evt);
+				x = mousePos.x;
+				y = mousePos.y;
+				
+				setCalls();
+				
+			}, false);
+			
+			function getMousePos(canvas, evt) {
+				var rect = canvas.getBoundingClientRect();
+				return {
+				  x: evt.clientX - rect.left,
+				  y: evt.clientY - rect.top
+				};
+			}*/
+			
+        }
+
+      window.onload = init;
+    </script>
+</head>
+<body>
+	<h1 id="title" align="center">Geo Wars</h1>
+    <canvas id="canvas" height="500" width="500" style= "border:1px solid black">Please use an HTML 5 browser</canvas>
+	<div id="score" height="100" width="500">
+	</div>
+</body>
+</html>

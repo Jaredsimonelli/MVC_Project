@@ -1,0 +1,38 @@
+extends ./base.jade
+block append style
+	link(rel="stylesheet", type="text/css", href="/assets/style.css")
+block body
+	nav
+		.navlink
+			a(href="/logout") Log out
+	section#makeDomo
+		form#domoForm(class="domoForm", name="domoForm", action="/maker", method="POST")
+			label(for="name") Name: 
+			input#domoName(type="text", name="name", placeholder="Name")
+			label(for="color") Color: 
+			input#domoColor(type="text", name="color", placeholder="Color")
+			label(for="level") Level: 
+			input#domoLevel(type="text", name="level", placeholder="Level")
+			input(type="hidden", name="_csrf", value="#{csrfToken}")
+	section#button
+		a#makeDomoSubmit(class="makeDomoSubmit", href="#") Make Player
+		.navlink
+			a(href="/game") Play Game
+	section#domos
+		if !domos || domos.length == 0
+			div.domo
+				h3.emptyDomo No Domos yet
+		else
+			each val in domos
+				div.domo
+					h3.domoName Name: #{val.name}
+					h3.domoColor Color: #{val.color}
+					h3.domoLevel Level: #{val.level}
+					a#viewDomo(class="viewDomo", href="/domoPage", value=val) View Player
+	#domoMessage
+		img#speech(src="/assets/img/speech.png", alt="speech box")
+		h3
+			span#errorMessage
+		img#domo(src="assets/img/domo.png", alt="domo")
+block scripts
+	script(src="/assets/maker.js")
