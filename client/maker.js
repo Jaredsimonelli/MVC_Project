@@ -33,7 +33,7 @@ $(document).ready(function() {
         $("#domoMessage").animate({width:'hide'},350);
     
         if($("#domoName").val() == '' || $("#domoColor").val() == '') {
-            handleError("RAWR! All fields are required");
+            handleError("All fields are required");
             return false;
         }
 

@@ -40,10 +40,10 @@ var domoPage = function(req, res){
 var makeDomo = function(req, res){
 	
 	if(!req.body.name || !req.body.color || !req.body.level){
-		return res.status(400).json({error: "RAWR! Name, Color, and Level are required"});
+		return res.status(400).json({error: "Name, Color, and Level are required"});
 	}
 	if(req.body.level < 0){
-		return res.status(400).json({error: "RAWR! Level needs to be higher than 0"});
+		return res.status(400).json({error: "Level needs to be higher than 0"});
 	}
 	
 	var domoData = {

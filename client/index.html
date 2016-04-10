@@ -114,9 +114,7 @@
 			ctx.strokeRect(50, playerBoxY + 75, 400, 50);
 			ctx.strokeRect(50, playerBoxY + 150, 400, 50);
 			ctx.strokeRect(50, playerBoxY + 225, 400, 50);
-			ctx.strokeRect(50, playerBoxY + 300, 400, 50);
-			
-			
+			ctx.strokeRect(50, playerBoxY + 300, 400, 50);	
 		}
         
 
@@ -239,7 +237,8 @@
 				//Setup the first time user connects, also draw
 				setUp();
 				
-				if(gameScreen ==  false)
+				//Start Screen code
+				/*if(gameScreen ==  false)
 				{
 					drawMainMenu();
 					socket.emit('setUp');
@@ -247,7 +246,10 @@
 				else
 				{	
 					redraw();
-				}
+				}*/
+				
+				socket.emit('setUp');
+				redraw();
 				
 				//Emit (Commented out for main menu test
 				//socket.emit('mover', { name: user, info: draws[user] });
