@@ -14,9 +14,10 @@ block body
 			label(for="level") Level: 
 			input#domoLevel(type="text", name="level", placeholder="Level")
 			input(type="hidden", name="_csrf", value="#{csrfToken}")
-	section#button
+	div#domoButton
 		a#makeDomoSubmit(class="makeDomoSubmit", href="#") Make Player
-		.navlink
+	div#playButton
+		.navlink#gameButton
 			a(href="/game") Play Game
 	section#domos
 		if !domos || domos.length == 0

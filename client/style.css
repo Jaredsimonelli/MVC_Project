@@ -25,6 +25,12 @@ nav:nth-child(1) {
     padding-left: 25px;
 }
 
+#gameButton {
+	width:200px;
+	margin-left:46%;
+	margin-right:45%;
+}
+
 .navlink {
     padding: 5px;
     padding-top: 12px;
@@ -76,14 +82,13 @@ nav:nth-child(1) {
 
 .makeDomoSubmit {
     transition: background-color 0.4s ease;
-    display: inline;
-	margin-left: -6.1%;
-    margin-top: 10px;
+    display: block;
+    margin-left: auto;
+	margin-right:auto;
     font-size: 1.2em;
-    width: 90px;
+    width: 100px;
 	background-color: #66bdff;
     border-radius: 2px;
-    color: black;
     text-decoration: none;
     padding: 12px;
 	border: 2px solid black;
@@ -108,7 +113,6 @@ nav:nth-child(1) {
     background-color: #55acee;
     border-radius: 2px;
     padding: 3px 0px;
-    color: black;
     text-decoration: none;
 	text-align: center;
     padding: 6px;
@@ -128,7 +132,7 @@ nav:nth-child(1) {
     height: 300px;
     width: 350px;
     margin: 0 auto;
-    padding-top: 350px;
+    padding-top: 275px;
     font-size: 1.2em;
 }
 
@@ -247,13 +251,17 @@ nav:nth-child(1) {
     margin-top: 100px;
 }
 
-#button{
-	width: 100%;
+#loginTitle {
+	margin-top: 20px;
+	text-align: center;
 }
 
-#button .navlink{
-	margin-top: 50px;
-	margin-left: 45%;
+.loginT {
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+	margin: 0;
+	font-family: "Arial Black", Gadget, sans-serif
 }
 
 .domo {
