@@ -5,32 +5,32 @@ block body
 	nav
 		.navlink
 			a(href="/logout") Log out
-	section#makeDomo
-		form#domoForm(class="domoForm", name="domoForm", action="/maker", method="POST")
+	section#makeCharacter
+		form#characterForm(class="characterForm", name="characterForm", action="/maker", method="POST")
 			label(for="name") Name: 
-			input#domoName(type="text", name="name", placeholder="Name")
+			input#characterName(type="text", name="name", placeholder="Name")
 			label(for="color") Color: 
-			input#domoColor(type="text", name="color", placeholder="Color")
+			input#characterColor(type="text", name="color", placeholder="Color")
 			label(for="level") Level: 
-			input#domoLevel(type="text", name="level", placeholder="Level")
+			input#characterLevel(type="text", name="level", placeholder="Level")
 			input(type="hidden", name="_csrf", value="#{csrfToken}")
-	div#domoButton
-		a#makeDomoSubmit(class="makeDomoSubmit", href="#") Make Player
+	div#characterButton
+		a#makeCharacterSubmit(class="makeCharacterSubmit", href="#") Make Character
 	div#playButton
 		.navlink#gameButton
 			a(href="/game") Play Game
-	section#domos
-		if !domos || domos.length == 0
-			div.domo
-				h3.emptyDomo No Domos yet
+	section#characters
+		if !characters || characters.length == 0
+			div.character
+				h3.emptyCharacter No Characters yet
 		else
-			each val in domos
-				div.domo
-					h3.domoName Name: #{val.name}
-					h3.domoColor Color: #{val.color}
-					h3.domoLevel Level: #{val.level}
-					a#viewDomo(class="viewDomo", href="/domoPage", value=val) View Player
-	#domoMessage
+			each val in characters
+				div.character
+					h3.characterName Name: #{val.name}
+					h3.characterColor Color: #{val.color}
+					h3.characterLevel Level: #{val.level}
+					a#viewCharacter(class="viewCharacter", href="/domoPage", value=val) View Character
+	#characterMessage
 		img#speech(src="/assets/img/speech.png", alt="speech box")
 		h3
 			span#errorMessage

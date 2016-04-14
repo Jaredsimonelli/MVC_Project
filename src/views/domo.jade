@@ -8,23 +8,23 @@ block body
 		.navlink
 			a(href="/logout") Log out
 	section#Top
-		h1.domoTitleA These are your Characters
-		h1.domoTitleB Hover over a character for more detailed info
-	section#domos
-		if !domos || domos.length == 0
-			div.domo
-				h3.emptyDomo No Domos yet
+		h1.characterTitleA These are your Characters
+		h1.characterTitleB Hover over a character for more detailed info
+	section#characters
+		if !characters || characters.length == 0
+			div.character
+				h3.emptyCharacter No Characters yet
 		else
-			each val in domos
-				div.newDomo
-					h3.domoName Name: #{val.name}
-					h3.domoColor Color: #{val.color}
-					h3.domoLevel Level: #{val.level}
+			each val in characters
+				div.newCharacter
+					h3.characterName Name: #{val.name}
+					h3.characterColor Color: #{val.color}
+					h3.characterLevel Level: #{val.level}
 					p.info
 						| Your name is #{val.name}, you were born into a age of war...
 						| You and your family are of the #{val.color} tribe. You have been taught to be loyal 
 						| and fierce..Fend off the waring tribe by collecting the most energy and Win! 
-	#domoMessage
+	#characterMessage
 		img#speech(src="/assets/img/speech.png", alt="speech box")
 		h3
 			span#errorMessage

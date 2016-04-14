@@ -4,7 +4,7 @@ $(document).ready(function() {
 
     function handleError(message) {
         $("#errorMessage").text(message);
-        $("#domoMessage").animate({width:'toggle'},350);
+        $("#characterMessage").animate({width:'toggle'},350);
     }
     
     function sendAjax(action, data) {
@@ -15,7 +15,7 @@ $(document).ready(function() {
             data: data,
             dataType: "json",
             success: function(result, status, xhr) {
-                $("#domoMessage").animate({width:'hide'},350);
+                $("#characterMessage").animate({width:'hide'},350);
 
                 window.location = result.redirect;
             },
@@ -27,17 +27,17 @@ $(document).ready(function() {
         });        
     }
     
-    $("#makeDomoSubmit").on("click", function(e) {
+    $("#makeCharacterSubmit").on("click", function(e) {
         e.preventDefault();
     
-        $("#domoMessage").animate({width:'hide'},350);
+        $("#characterMessage").animate({width:'hide'},350);
     
-        if($("#domoName").val() == '' || $("#domoColor").val() == '') {
+        if($("#characterName").val() == '' || $("#characterColor").val() == '') {
             handleError("All fields are required");
             return false;
         }
 
-        sendAjax($("#domoForm").attr("action"), $("#domoForm").serialize());
+        sendAjax($("#characterForm").attr("action"), $("#characterForm").serialize());
         
         return false;
     });

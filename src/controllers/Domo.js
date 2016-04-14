@@ -12,7 +12,7 @@ var makerPage = function(req, res){
 			return res.status(400).json({error: 'An error occurred'});
 		}
 		
-		res.render('app', {csrfToken: req.csrfToken(), domos: docs});
+		res.render('app', {csrfToken: req.csrfToken(), characters: docs});
 	});
 	
 };
@@ -32,7 +32,7 @@ var domoPage = function(req, res){
 			owner: req.session.account._id
 		};
 		
-		res.render('domo', {csrfToken: req.csrfToken(), domos: docs});
+		res.render('domo', {csrfToken: req.csrfToken(), characters: docs});
 	});
 	//res.render('game', {csrfToken: req.csrfToken()});	
 };
@@ -42,7 +42,7 @@ var makeDomo = function(req, res){
 	if(!req.body.name || !req.body.color || !req.body.level){
 		return res.status(400).json({error: "Name, Color, and Level are required"});
 	}
-	if(req.body.level < 0){
+	if(req.body.level <= 0){
 		return res.status(400).json({error: "Level needs to be higher than 0"});
 	}
 	
